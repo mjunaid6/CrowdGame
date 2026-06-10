@@ -24,6 +24,9 @@ Scores persist across server restarts (using the same SQLite or PostgreSQL datab
 - `public/screen.html` — completion screen shows global rank + "View Global Leaderboard" button
 - `public/mobile.html` — complete screen includes "Global Leaderboard" link
 
+<img src="public\uploads\screenshots\leaderboard_mobile_view.jpeg" alt="Alt text" width="600">
+<img src="public\uploads\screenshots\leaderboard_desktop_view.jpeg" alt="Alt text" width="600">
+
 ### 2. UI / UX Overhaul (`🎨 Modernization`)
 
 The entire frontend was refactored to transition away from the original dark, neon-cyberpunk aesthetic. The application now utilizes a **Premium Soft Modern Design** to improve accessibility, legibility, and professional appeal. The new UI relies on a refined color palette (Indigo, Rose, Slate), subtle glassmorphism, tactile drop-shadows, and modern typography (`Outfit` and `JetBrains Mono`).
@@ -38,6 +41,9 @@ The entire frontend was refactored to transition away from the original dark, ne
 | **Leaderboard** (`leaderboard.html`) | Crisp white data tables with soft pastel row highlights for medalists (Gold, Silver, Bronze), modern search input fields, and floating interactive stat tiles. |
 
 ---
+
+<img src="public\uploads\screenshots\admin_page.jpeg" alt="Alt text" width="600">
+<img src="public\uploads\screenshots\gamescreen.jpeg" alt="Alt text" width="600">
 
 ## Setup & Running
 
