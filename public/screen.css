@@ -496,3 +496,54 @@ body {
   70% { transform: scale(0.9); opacity: 0.9; }
   100% { transform: scale(1); opacity: 1; }
 }
+
+/* ── Global Leaderboard button on completion screen ── */
+.btn-leaderboard {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  margin-top: 8px;
+  background: rgba(255, 184, 0, 0.1);
+  color: var(--color-yellow);
+  border: 1.5px solid var(--color-yellow);
+  font-family: var(--font-main);
+  font-weight: 600;
+  font-size: 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.btn-leaderboard:hover {
+  background: var(--color-yellow);
+  color: #000;
+  box-shadow: 0 0 15px var(--color-yellow);
+}
+
+/* ── Lobby: make QR card + room-code card look sharper ── */
+.lobby-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.lobby-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.55);
+}
+
+/* ── Player avatar pop-in ── */
+.player-avatar {
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+}
+.player-avatar:hover {
+  transform: scale(1.06);
+}
+
+/* ── HUD progress bar glow pulse when near complete ── */
+.progress-bar-fill.near-complete {
+  animation: glowPulse 0.8s ease-in-out infinite alternate;
+}
+@keyframes glowPulse {
+  from { box-shadow: 0 0 8px var(--color-cyan); }
+  to   { box-shadow: 0 0 22px var(--color-cyan), 0 0 40px rgba(0,243,255,0.4); }
+}

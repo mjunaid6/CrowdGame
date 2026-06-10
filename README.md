@@ -1,210 +1,136 @@
-# CrowdPlay: Real-Time Multiplayer Synthwave Jigsaw Puzzle
+# CrowdPlay — Leaderboard Edition
 
-Welcome to **CrowdPlay**, a real-time, mobile-controlled multiplayer jigsaw puzzle game built with Node.js, Express, and Socket.io. 
-
-CrowdPlay is designed to run in a hybrid environment: a **Big Screen View** (e.g., a TV or projector) displays the shared puzzle board, while players connect using their **Mobile Controllers** via a simple 4-character room code to drag, drop, and snap puzzle pieces into place in real time.
+> A fork of [sachgaur/CrowdGame](https://github.com/sachgaur/CrowdGame) with a **global persistent leaderboard**, UI overhaul, and UX improvements.
 
 ---
 
-## 🎮 How It Works
+## What Was Changed
 
-```mermaid
-flowchart TD
-    subgraph Clients [Frontend Clients]
-        Screen["🖥️ Big Screen View (Host)<br>/screen/:roomCode"]
-        Mobile["📱 Mobile Controller (Player)<br>/join/:roomCode"]
-        Admin["⚙️ Admin Panel<br>/admin"]
-    end
+### 1. Global Persistent Leaderboard (`🏆 New Feature`)
 
-    subgraph Server [Express & Socket.io Server]
-        NodeApp["Node.js Server (server.js)"]
-        RoomMgr["Room Manager (roomManager.js)"]
-        JigsawAct["Jigsaw Activity (jigsaw/index.js)"]
-    end
+Every completed puzzle session is automatically recorded to a new `global_leaderboard` database table.
+Scores persist across server restarts (using the same SQLite or PostgreSQL database the app already uses).
 
-    subgraph Storage ["Storage & Database"]
-        DB[(Knex DB: SQLite or Postgres)]
-        Cache[(Redis Cache / PubSub)]
-        S3Bucket["☁️ AWS S3 (or Local Fallback)"]
-    end
+**New files:**
+- `src/services/leaderboard.js` — DB layer: `ensureTable`, `recordGame`, `getTopScores`, `getPlayerBest`, `getGlobalStats`
+- `src/routes/leaderboard.js` — REST API (`GET /api/leaderboard`, `/api/leaderboard/stats`, `/api/leaderboard/player`)
+- `public/leaderboard.html` — Standalone leaderboard page with live search, stats banner, animated rows, and auto-refresh every 30s
 
-    Screen <-->|Socket: host-room / piece-move| NodeApp
-    Mobile <-->|Socket: join-room / place-piece| NodeApp
-    Admin <-->|REST & Socket: admin-start-activity| NodeApp
-    
-    NodeApp <--> RoomMgr
-    RoomMgr <--> JigsawAct
-    
-    JigsawAct <-->|File operations & Fallbacks| S3Bucket
-    RoomMgr <-->|Sync room state| Cache
-    RoomMgr <-->|Save rooms / participants| DB
-```
+**Modified files:**
+- `src/services/db.js` — calls `ensureTable()` during `initSchema` bootstrap
+- `src/socket/index.js` — records game results via `lb.recordGame()` on puzzle completion; stamps `room.startedAt` to track solve duration; passes `solveDurationSecs` in the `activity-complete` broadcast
+- `server.js` — mounts `GET/DELETE /api/leaderboard` router; adds `GET /leaderboard` page route
+- `public/screen.js` — uses server-provided `solveDurationSecs`; fetches global rank after completion; adds near-complete progress bar glow
+- `public/screen.html` — completion screen shows global rank + "View Global Leaderboard" button
+- `public/mobile.html` — complete screen includes "Global Leaderboard" link
 
-1. **Host Setup**: The host opens the **Big Screen View** at `/screen/DEMO` (or any generated room code). This establishes a Socket.io host connection.
-2. **Player Joins**: Players scan a QR code or visit `/join/[ROOM_CODE]`, enter their name, and get assigned a unique neon color.
-3. **Admin Launch**: The administrator uses the `/admin` dashboard to select a puzzle image (or upload one), configure the grid dimensions (rows/columns), and start the activity.
-4. **Gameplay**:
-   - The server uses the `sharp` library to slice the chosen image into grid pieces.
-   - The server assigns pieces to active players (up to 2 at a time).
-   - Players drag and drop pieces on their phone. Drag coordinates are synced live to the Big Screen.
-   - When a player drops a piece near its correct coordinates, it snaps into place, awards points, and gives the player new pieces until the puzzle is completed.
+### 2. UI / UX Overhaul (`🎨 Improved`)
+
+| Page | Change |
+|------|--------|
+| **Landing page** (`index.html`) | Full redesign — Orbitron title font, gradient accent bar, better button hierarchy, leaderboard nav button, animated grid background |
+| **Admin header** | Leaderboard quick-link, version bump to v2.0 |
+| **Big screen** — gameplay HUD | Progress bar pulses with a cyan glow when puzzle is ≥85% complete |
+| **Big screen** — completion screen | Shows formatted solve time (e.g. `1m 42s`), all-time rank badge, leaderboard link button |
+| **Mobile** — completion screen | "Global Leaderboard" link button |
+| **Lobby cards** | Subtle lift-on-hover transform effect |
+| `screen.css` | New `.btn-leaderboard`, `.near-complete` glow animation, hover transitions |
 
 ---
 
-## 📂 Project Structure
+## Setup & Running
+
+### Prerequisites
+
+- **Node.js** ≥ 14
+- **npm** ≥ 7
+- Optional: PostgreSQL (falls back to SQLite automatically)
+
+### 1. Clone the fork
 
 ```bash
-├── Dockerfile                  # Production container configuration
-├── server.js                   # Application entry point, server boot & SSL config
-├── crowdplay.sqlite            # Local development SQLite database (auto-generated)
-├── public/                     # Static frontend files (HTML, CSS, JS)
-│   ├── index.html              # Landing page
-│   ├── admin.html / .js / .css # Admin panel to upload images & launch rooms
-│   ├── mobile.html / .js / .css# Mobile player controller UI
-│   ├── screen.html / .js / .css# Shared big screen viewer UI
-│   ├── style.css               # Shared layout stylesheet
-│   └── uploads/                # Local directory for uploaded puzzle images
-├── src/
-│   ├── config.js               # Central environment variable mapping
-│   ├── activities/             # Game modes / activities
-│   │   ├── base.js             # BaseActivity parent class defining lifecycles
-│   │   └── jigsaw/
-│   │       ├── index.js        # JigsawActivity game state logic
-│   │       └── puzzleGenerator.js # Slices image buffers into pieces using sharp
-│   ├── routes/                 # REST API endpoints
-│   │   ├── admin.js            # Admin authentication and image uploads
-│   │   └── room.js             # Room details fetching
-│   ├── services/               # DB, Cache, and S3 Storage clients
-│   │   ├── db.js               # Knex database wrapper (Postgres/SQLite)
-│   │   ├── redis.js            # Redis client (with an in-memory mock fallback)
-│   │   └── storage.js          # S3 client (with local fs fallback)
-│   └── socket/                 # Socket.io event architecture
-│       ├── index.js            # Gateway router for room and player socket events
-│       └── roomManager.js      # Active room and connection tracker
-└── infrastructure/
-    └── aws/
-        └── cloudformation.yaml # CloudFormation template for AWS ECS Fargate
+git clone https://github.com/<your-username>/CrowdGame.git
+cd CrowdGame
 ```
 
----
+### 2. Install dependencies
 
-## 🚀 Quick Start (Development)
-
-### 1. Prerequisites
-- **Node.js**: `v14.0.0` or higher is required.
-- **System Dependencies**: The `sharp` image-processing library compiles native binaries. Ensure your system tools are up to date.
-
-### 2. Installation
-Install dependencies in the root directory:
 ```bash
 npm install
 ```
 
-### 3. Run the Server
-Launch the development server:
+> If you hit a SQLite rebuild issue in certain environments (e.g. mismatched native binaries), run:
+> ```bash
+> npm rebuild sqlite3
+> # or
+> npm install sqlite3 --build-from-source
+> ```
+
+### 3. Environment (optional)
+
+Create a `.env` file or set environment variables:
+
+```env
+PORT=3000                  # default: 3000
+ADMIN_PASSWORD=mysecret    # default: admin123
+JWT_SECRET=changeme        # default: crowdplay-super-secret-key-change-in-prod
+
+# Optional: use PostgreSQL instead of SQLite
+DATABASE_URL=postgres://user:pass@host:5432/crowdplay
+```
+
+### 4. Run
+
 ```bash
+npm start
+# or for development
 npm run dev
 ```
 
-### 4. First-Time Local Playthrough
-After `npm run dev` is running, keep that terminal open and use the URLs below.
+The server starts on **HTTPS** in development (self-signed cert) — required for DeviceOrientation API on mobile.
 
-#### Host / Big Screen
-Open this on the computer, TV, or projector that will show the shared puzzle board:
-```text
-https://localhost:3000/screen/DEMO
-```
+### 5. Access
 
-This screen shows the room code and the shared puzzle board. Leave it open while people play.
+| URL | Description |
+|-----|-------------|
+| `https://localhost:3000/` | Landing page |
+| `https://localhost:3000/admin` | Admin panel (password: `admin123`) |
+| `https://localhost:3000/screen/DEMO` | Big screen display |
+| `https://localhost:3000/leaderboard` | **Global leaderboard** (new) |
 
-#### Admin
-Open this in another browser tab:
-```text
-https://localhost:3000/admin
-```
-
-Log in with the admin password. In local development, the default is:
-```text
-admin123
-```
-
-Then:
-1. Choose or upload a puzzle image.
-2. Set the puzzle rows and columns.
-3. Start the activity for room `DEMO`.
-
-#### Players
-Players should join from their phones using the same room code:
-```text
-https://<YOUR_LOCAL_IP>:3000/join/DEMO
-```
-
-Replace `<YOUR_LOCAL_IP>` with the IP address of the computer running the server, for example:
-```text
-https://192.168.1.5:3000/join/DEMO
-```
-
-Each player should:
-1. Open the join URL on their phone.
-2. Accept the browser warning for the self-signed development certificate.
-3. Enter their name.
-4. Use the phone screen to drag and drop assigned puzzle pieces.
-
-For a quick local test on the same computer, you can also open:
-```text
-https://localhost:3000/join/DEMO
-```
+> Mobile browsers will show a certificate warning for the self-signed cert. Tap **Advanced → Proceed** to continue.
 
 ---
 
-## 🔒 Crucial Dev Detail: SSL/HTTPS
-Mobile browsers block access to **Device Orientation API** (gyroscope/accelerometer) and other interactive touch gestures when running over unencrypted HTTP (except on `localhost`).
+## Leaderboard API Reference
 
-To allow mobile devices on your local network to connect and function correctly:
-- In **development** (`NODE_ENV` not set to `production`), the server generates dynamic, **self-signed SSL certificates** on the fly using `selfsigned` and launches an **HTTPS** server.
-- The console will output:
-  ```
-  Running in DEVELOPMENT mode (Self-signed HTTPS server)...
-  Access Admin Dashboard: https://localhost:3000/admin
-  Access Screen view:     https://localhost:3000/screen/DEMO
-  ```
-- **To connect your phone**:
-  1. Find your computer's local IP address (e.g., `192.168.1.5`).
-  2. Navigate on your phone to `https://<YOUR_LOCAL_IP>:3000/join/DEMO`.
-  3. Your browser will show a warning ("Your connection is not private"). Click **Advanced -> Proceed** to bypass the self-signed warning.
+| Method | Endpoint | Auth | Description |
+|--------|----------|------|-------------|
+| `GET` | `/api/leaderboard?limit=20` | None | Top N all-time scores |
+| `GET` | `/api/leaderboard/stats` | None | Aggregate stats (total solvers, fastest solve) |
+| `GET` | `/api/leaderboard/player?name=Maverick` | None | Personal best for a player |
+| `DELETE` | `/api/leaderboard/reset` | Admin JWT | Wipe all leaderboard records |
 
 ---
 
-## ⚙️ Configuration & Environment Variables
+## Assumptions & Known Limitations
 
-Create a `.env` file or set the following variables in your environment:
-
-| Variable | Description | Default |
-| :--- | :--- | :--- |
-| `NODE_ENV` | Mode of operation (`development` or `production`) | `development` |
-| `PORT` | The port the application listens on | `3000` |
-| `DATABASE_URL` | PostgreSQL connection string. If omitted, falls back to SQLite | *None* |
-| `USE_SQLITE_FALLBACK` | Set to `false` to disable SQLite database fallback | `true` |
-| `SQLITE_PATH` | Path to the SQLite DB file | `../crowdplay.sqlite` |
-| `REDIS_URL` | Redis URL. If omitted, falls back to an In-Memory mock client | *None* |
-| `S3_BUCKET` | AWS S3 Bucket name for puzzle image storage | *None* |
-| `AWS_REGION` | AWS Region for the S3 bucket | `us-east-1` |
-| `AWS_ACCESS_KEY_ID` | IAM credential key for S3 uploads | *None* |
-| `AWS_SECRET_ACCESS_KEY` | IAM credential secret for S3 uploads | *None* |
-| `ADMIN_PASSWORD` | Password to log in to `/admin` | `admin123` |
-| `JWT_SECRET` | Secret key used to sign Admin JWT session tokens | `crowdplay-super-secret-key-change-in-prod` |
+- **Solve duration** is computed server-side from when the admin clicks "Start Activity" to when the last piece is placed. If the admin panel was pre-opened or the clock drifts, the duration may be slightly off.
+- **Player names are not deduplicated** — "Maverick" in room A and "Maverick" in room B appear as separate entries. This is intentional; names are per-session display names, not accounts.
+- **SQLite** is used by default and stores all data in `crowdplay.sqlite` next to `server.js`. For production deployments, set `DATABASE_URL` to a PostgreSQL connection string.
+- The leaderboard auto-refreshes every **30 seconds** while the browser tab is visible.
+- The `DELETE /api/leaderboard/reset` endpoint requires a valid admin JWT (same token used by the admin panel).
 
 ---
 
-## ☁️ Production Deployment
+## Screenshots
 
-In **production** (`NODE_ENV=production`):
-- The Node.js application runs as a standard **HTTP** server (dynamic SSL generation is skipped for performance).
-- SSL termination and HTTPS routing must be handled at the load-balancer level (e.g., AWS Application Load Balancer).
-- A health-check endpoint is available at `/health` returning HTTP 200 (required for target groups).
+> See `/public/leaderboard.html` — animated neon synthwave leaderboard with medal badges (🥇🥈🥉), live search filter, stats banner, and CRT overlay.
 
-### AWS ECS Fargate Deployment
-A complete CloudFormation template is provided under [cloudformation.yaml](file:///Users/sachin/Documents/GitHub/Mobile_Game/infrastructure/aws/cloudformation.yaml) to provision:
-1. An **ECS Cluster** running tasks on Fargate.
-2. An **Application Load Balancer** with listener rules routing HTTPS traffic to HTTP container instances.
-3. Integration support for an RDS PostgreSQL database instance and AWS ElastiCache Redis.
+---
+
+## Tech Stack
+
+- **Backend:** Node.js, Express, Socket.IO, Knex (SQLite/PostgreSQL)
+- **Frontend:** Vanilla JS, CSS custom properties, Web Audio API
+- **Fonts:** Orbitron, Outfit, Share Tech Mono (Google Fonts)

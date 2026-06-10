@@ -6,128 +6,247 @@
   <title>CrowdPlay | Interactive Event Platform</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&family=Share+Tech+Mono&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-dark: #080415;
-      --color-cyan: #00f3ff;
-      --color-pink: #ff007f;
-      --font-main: 'Outfit', sans-serif;
+      --bg: #06010f;
+      --cyan:   #00f3ff;
+      --pink:   #ff007f;
+      --gold:   #ffb800;
+      --purple: #9d4edd;
+      --panel:  rgba(10, 5, 28, 0.8);
+      --font-title: 'Orbitron', sans-serif;
+      --font-main:  'Outfit', sans-serif;
+      --font-mono:  'Share Tech Mono', monospace;
     }
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
-      background: var(--bg-dark);
+      background: var(--bg);
       color: #fff;
       font-family: var(--font-main);
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
       overflow: hidden;
       position: relative;
     }
+
+    /* ── Animated background ── */
+    .bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse at 15% 20%, rgba(255,0,127,0.14) 0%, transparent 50%),
+        radial-gradient(ellipse at 85% 75%, rgba(0,243,255,0.14) 0%, transparent 50%),
+        radial-gradient(ellipse at 50% 50%, rgba(157,78,221,0.07) 0%, transparent 65%);
+    }
+    .grid-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-image:
+        linear-gradient(rgba(0,243,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,243,255,0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
     .crt {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
-      background-size: 100% 4px;
-      z-index: 100;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
       pointer-events: none;
+      background:
+        linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.18) 50%),
+        linear-gradient(90deg, rgba(255,0,0,0.03), rgba(0,255,0,0.01), rgba(0,0,255,0.03));
+      background-size: 100% 4px, 6px 100%;
     }
-    .glow {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      background-image: 
-        radial-gradient(circle at 10% 20%, rgba(255, 0, 127, 0.1) 0%, transparent 40%),
-        radial-gradient(circle at 80% 80%, rgba(0, 243, 255, 0.1) 0%, transparent 40%);
-      z-index: -1;
-    }
-    .launcher {
-      text-align: center;
-      background: rgba(15, 9, 38, 0.7);
-      backdrop-filter: blur(10px);
-      padding: 50px;
+
+    /* ── Card ── */
+    .card {
+      position: relative;
+      z-index: 1;
+      background: var(--panel);
+      backdrop-filter: blur(16px);
       border-radius: 20px;
-      border: 1.5px solid rgba(255, 0, 127, 0.25);
-      box-shadow: 0 10px 45px rgba(0,0,0,0.5);
-      max-width: 500px;
-      width: 90%;
-    }
-    h1 {
-      font-size: 48px;
-      font-weight: 900;
-      letter-spacing: 5px;
-      color: var(--color-cyan);
-      margin-bottom: 10px;
-      text-shadow: 0 0 15px rgba(0, 243, 255, 0.5);
-    }
-    .pink {
-      color: var(--color-pink);
-      text-shadow: 0 0 15px rgba(255, 0, 127, 0.5);
-    }
-    p {
-      color: #94a3b8;
-      font-size: 16px;
-      margin-bottom: 30px;
-      line-height: 1.5;
-    }
-    .btn-group {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-    .btn {
-      display: block;
-      padding: 15px;
-      font-size: 16px;
-      font-weight: bold;
-      text-decoration: none;
-      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.09);
+      box-shadow:
+        0 0 0 1px rgba(0,243,255,0.08),
+        0 30px 80px rgba(0,0,0,0.6),
+        inset 0 0 40px rgba(0,243,255,0.03);
+      padding: 52px 44px 44px;
+      width: 100%;
+      max-width: 460px;
       text-align: center;
-      transition: all 0.2s ease;
+    }
+
+    /* Accent top bar */
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      border-radius: 20px 20px 0 0;
+      background: linear-gradient(90deg, var(--pink), var(--cyan), var(--purple));
+      box-shadow: 0 0 16px rgba(0,243,255,0.4);
+    }
+
+    /* ── Logo ── */
+    .logo {
+      font-family: var(--font-title);
+      font-size: clamp(2.8rem, 8vw, 4.2rem);
+      font-weight: 900;
+      letter-spacing: 0.15em;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .logo .crowd { color: var(--cyan); text-shadow: 0 0 20px rgba(0,243,255,0.6); }
+    .logo .play  { color: var(--pink); text-shadow: 0 0 20px rgba(255,0,127,0.6); }
+
+    .tagline {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: rgba(255,255,255,0.3);
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      margin-bottom: 36px;
+    }
+
+    /* ── Description ── */
+    .desc {
+      color: rgba(255,255,255,0.55);
+      font-size: 0.95rem;
+      line-height: 1.65;
+      margin-bottom: 36px;
+    }
+
+    /* ── Buttons ── */
+    .btn-group { display: flex; flex-direction: column; gap: 12px; }
+
+    .btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 15px 20px;
+      border-radius: 10px;
+      font-family: var(--font-main);
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: 0.04em;
+      text-decoration: none;
       cursor: pointer;
+      border: none;
+      transition: all 0.2s cubic-bezier(0.16,1,0.3,1);
+      position: relative;
+      overflow: hidden;
     }
-    .btn-pink {
-      background: var(--color-pink);
-      color: #000;
+
+    .btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0);
+      transition: background 0.2s;
     }
-    .btn-pink:hover {
-      background: #ff3399;
-      box-shadow: 0 0 15px rgba(255, 0, 127, 0.6);
+    .btn:hover::after { background: rgba(255,255,255,0.06); }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--pink), #c00060);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(255,0,127,0.35);
     }
-    .btn-cyan {
+    .btn-primary:hover { box-shadow: 0 4px 28px rgba(255,0,127,0.55); transform: translateY(-1px); }
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-secondary {
       background: transparent;
-      color: var(--color-cyan);
-      border: 1.5px solid var(--color-cyan);
+      color: var(--cyan);
+      border: 1.5px solid rgba(0,243,255,0.4);
     }
-    .btn-cyan:hover {
-      background: var(--color-cyan);
-      color: #000;
-      box-shadow: 0 0 15px var(--color-cyan);
+    .btn-secondary:hover {
+      background: rgba(0,243,255,0.08);
+      border-color: var(--cyan);
+      box-shadow: 0 0 16px rgba(0,243,255,0.2);
+      transform: translateY(-1px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: rgba(255,255,255,0.55);
+      border: 1px solid rgba(255,255,255,0.12);
+      font-size: 0.85rem;
+    }
+    .btn-outline:hover {
+      background: rgba(255,255,255,0.05);
+      color: var(--gold);
+      border-color: rgba(255,184,0,0.4);
+    }
+
+    .btn-icon { font-size: 1.1rem; }
+
+    /* ── Divider ── */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 6px 0 2px;
+      color: rgba(255,255,255,0.15);
+      font-size: 0.7rem;
+      font-family: var(--font-mono);
+      letter-spacing: 0.2em;
+    }
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255,255,255,0.08);
+    }
+
+    /* ── Version badge ── */
+    .version {
+      margin-top: 24px;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.18);
+      letter-spacing: 0.15em;
     }
   </style>
 </head>
 <body>
+  <div class="bg"></div>
+  <div class="grid-bg"></div>
   <div class="crt"></div>
-  <div class="glow"></div>
 
-  <div class="launcher">
-    <h1>CROWD<span class="pink">PLAY</span></h1>
-    <p>Interactive social games and collaborative puzzle modules designed for events, malls, and conferences.</p>
-    
+  <div class="card">
+    <div class="logo"><span class="crowd">CROWD</span><span class="play">PLAY</span></div>
+    <div class="tagline">Interactive Event Platform</div>
+
+    <p class="desc">
+      Real-time collaborative puzzle games designed for events, malls, and conferences.
+      Teams solve together — big screen, mobile controllers.
+    </p>
+
     <div class="btn-group">
-      <a href="/admin" class="btn btn-pink">Enter Admin Panel</a>
-      <a href="/screen/DEMO" class="btn btn-cyan">Open Big Screen Display</a>
+      <a href="/admin" class="btn btn-primary">
+        <span class="btn-icon">⚙️</span>
+        Admin Panel
+      </a>
+      <a href="/screen/DEMO" class="btn btn-secondary">
+        <span class="btn-icon">🖥️</span>
+        Big Screen Display
+      </a>
+      <div class="divider">OR</div>
+      <a href="/leaderboard" class="btn btn-outline">
+        <span class="btn-icon">🏆</span>
+        Global Leaderboard
+      </a>
     </div>
+
+    <div class="version">CROWDPLAY v2.0 · LEADERBOARD EDITION</div>
   </div>
 </body>
 </html>

@@ -8,6 +8,7 @@ const selfsigned = require('selfsigned');
 const config = require('./src/config');
 const dbService = require('./src/services/db');
 const roomRouter = require('./src/routes/room');
+const leaderboardRouter = require('./src/routes/leaderboard');
 const adminRouter = require('./src/routes/admin');
 const initSockets = require('./src/socket');
 
@@ -21,6 +22,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Mount API routers
 app.use('/api/room', roomRouter);
 app.use('/api/admin', adminRouter);
+app.use('/api/leaderboard', leaderboardRouter);
+
+// Global leaderboard page
+app.get('/leaderboard', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'leaderboard.html'));
+});
 
 // Main page routes
 // Route for Mobile Controller

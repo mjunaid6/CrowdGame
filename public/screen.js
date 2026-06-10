@@ -239,6 +239,10 @@ function setupConnection() {
     // Update HUD
     document.getElementById('hudProgressFill').style.width = `${progress}%`;
     document.getElementById('hudProgressText').textContent = `${progress}%`;
+    // Add glow pulse when almost complete
+    const fill = document.getElementById('hudProgressFill');
+    if (progress >= 85) fill.classList.add('near-complete');
+    else fill.classList.remove('near-complete');
   });
 
   // Event: Puzzle solved!
@@ -435,13 +439,15 @@ function preCachePieceImages(pieces) {
 }
 
 // 5. SOLVED CELEBRATION
-function triggerPuzzleCompletion({ leaderboard, totalPieces }) {
+function triggerPuzzleCompletion({ leaderboard, totalPieces, solveDurationSecs }) {
   currentState = SCREEN_STATE.COMPLETE;
   Sound.playComplete();
 
-  // Calculate solving time
+  // Use server-provided duration if available, else calculate locally
   const endTime = new Date();
-  const durationSec = Math.round((endTime - startTime) / 1000);
+  const durationSec = (typeof solveDurationSecs === 'number' && solveDurationSecs > 0)
+    ? solveDurationSecs
+    : Math.round((endTime - startTime) / 1000);
 
   // Transition views — must add 'active' to bring opacity from 0 → 1
   document.getElementById('gameplayScreen').classList.remove('active');
@@ -451,7 +457,8 @@ function triggerPuzzleCompletion({ leaderboard, totalPieces }) {
 
   // Fill stats
   document.getElementById('totalSlicesPlaced').textContent = totalPieces;
-  document.getElementById('solvedDuration').textContent = `${durationSec} seconds`;
+  const m = Math.floor(durationSec / 60), s = durationSec % 60;
+  document.getElementById('solvedDuration').textContent = m > 0 ? `${m}m ${s}s` : `${durationSec}s`;
 
   // Render leaderboard list
   const list = document.getElementById('leaderboardList');
@@ -472,6 +479,21 @@ function triggerPuzzleCompletion({ leaderboard, totalPieces }) {
     `;
     list.appendChild(item);
   });
+
+  // Fetch global leaderboard to show this session's rank
+  fetch('/api/leaderboard?limit=100')
+    .then(r => r.json())
+    .then(data => {
+      if (data.scores && leaderboard[0]) {
+        const topScore = leaderboard[0].score;
+        const rank = data.scores.findIndex(s => s.score <= topScore) + 1;
+        const rankEl = document.getElementById('globalRankVal');
+        if (rankEl) {
+          rankEl.textContent = rank > 0 ? `#${rank} ALL-TIME` : 'TOP TIER';
+        }
+      }
+    })
+    .catch(() => {});
 
   // Spawn dynamic rain of completion particles (confetti)
   // Store the interval ID so it can be cancelled on the next game start.

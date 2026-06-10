@@ -96,6 +96,10 @@ async function initSchema() {
       console.log('Created table: puzzle_states');
     }
 
+    // 5. Global leaderboard table (new)
+    const lbService = require('../routes/leaderboard');
+    await lbService.ensureTable();
+
     console.log('Database schema initialization completed.');
   } catch (error) {
     console.error('Error initializing database schema:', error);
