@@ -6,71 +6,69 @@
   <title>CrowdPlay | Global Leaderboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&family=Share+Tech+Mono&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-darker: #05020f;
-      --bg-dark: #0a0520;
-      --panel:    rgba(14, 8, 35, 0.85);
-      --cyan:  #00f3ff;
-      --pink:  #ff007f;
-      --gold:  #ffb800;
-      --green: #39ff14;
-      --purple:#9d4edd;
-      --font-title: 'Orbitron', sans-serif;
-      --font-main:  'Outfit', sans-serif;
-      --font-mono:  'Share Tech Mono', monospace;
+      /* Soft Modern Color Palette */
+      --bg-body: #f8fafc;
+      --bg-panel: #ffffff;
+      
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --text-light: #94a3b8;
+      
+      --color-primary: #6366f1; /* Soft Indigo */
+      --color-secondary: #ec4899; /* Soft Pink/Rose */
+      --color-gold: #f59e0b; /* Warm Amber for Gold/Fastest */
+      
+      --border-light: #e2e8f0;
+      
+      /* Plush Shadows */
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+      --shadow-lg: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+      
+      --font-main: 'Outfit', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background: var(--bg-dark);
-      color: #fff;
+      background: var(--bg-body);
+      color: var(--text-main);
       font-family: var(--font-main);
       min-height: 100vh;
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
-    /* ── Animated background ───────────────────────────────────────────────── */
+    /* ── Soft Background ───────────────────────────────────────────────────── */
     .bg-layer {
       position: fixed;
       inset: 0;
       z-index: 0;
-      background:
-        radial-gradient(ellipse at 15% 10%,  rgba(255, 0, 127, 0.12) 0%, transparent 55%),
-        radial-gradient(ellipse at 85% 90%,  rgba(0, 243, 255, 0.12) 0%, transparent 55%),
-        radial-gradient(ellipse at 50% 50%,  rgba(157, 78, 221, 0.06) 0%, transparent 70%);
+      background-image: 
+        radial-gradient(at 10% 10%, rgba(99, 102, 241, 0.05) 0, transparent 50%), 
+        radial-gradient(at 90% 90%, rgba(236, 72, 153, 0.05) 0, transparent 50%);
     }
 
     .grid-bg {
       position: fixed;
       inset: 0;
       z-index: 0;
-      background-image:
-        linear-gradient(rgba(0, 243, 255, 0.04) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 243, 255, 0.04) 1px, transparent 1px);
-      background-size: 60px 60px;
-    }
-
-    .crt-overlay {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      pointer-events: none;
-      background:
-        linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.18) 50%),
-        linear-gradient(90deg, rgba(255,0,0,0.03), rgba(0,255,0,0.01), rgba(0,0,255,0.03));
-      background-size: 100% 4px, 6px 100%;
+      background-image: radial-gradient(var(--text-light) 1px, transparent 1px);
+      background-size: 32px 32px;
+      opacity: 0.15;
     }
 
     /* ── Layout ────────────────────────────────────────────────────────────── */
     .page {
       position: relative;
       z-index: 1;
-      max-width: 900px;
+      max-width: 950px;
       margin: 0 auto;
-      padding: 40px 20px 80px;
+      padding: 60px 20px 80px;
     }
 
     /* ── Header ────────────────────────────────────────────────────────────── */
@@ -83,32 +81,35 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      color: rgba(255,255,255,0.45);
+      color: var(--text-muted);
       text-decoration: none;
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      letter-spacing: 0.1em;
-      margin-bottom: 28px;
+      font-family: var(--font-main);
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 24px;
       transition: color 0.2s;
     }
-    .back-link:hover { color: var(--cyan); }
+    .back-link:hover { color: var(--color-primary); }
 
     .page-title {
-      font-family: var(--font-title);
-      font-size: clamp(2rem, 6vw, 3.5rem);
-      font-weight: 900;
-      letter-spacing: 0.12em;
+      font-family: var(--font-main);
+      font-size: clamp(2.5rem, 6vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
       line-height: 1;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
-    .title-crowd { color: var(--cyan); text-shadow: 0 0 20px rgba(0,243,255,0.55); }
-    .title-play  { color: var(--pink); text-shadow: 0 0 20px rgba(255,0,127,0.55); }
+    .title-crowd { color: var(--color-primary); }
+    .title-play  { color: var(--color-secondary); }
 
     .page-subtitle {
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      color: rgba(255,255,255,0.4);
-      letter-spacing: 0.25em;
+      font-family: var(--font-main);
+      font-size: 0.95rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.15em;
       text-transform: uppercase;
     }
 
@@ -116,242 +117,229 @@
     .stats-banner {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
+      gap: 20px;
       margin-bottom: 40px;
     }
 
     .stat-tile {
-      background: var(--panel);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 12px;
-      padding: 20px 16px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-light);
+      border-radius: 16px;
+      padding: 24px 20px;
       text-align: center;
-      backdrop-filter: blur(10px);
+      box-shadow: var(--shadow-sm);
       position: relative;
       overflow: hidden;
+      transition: transform 0.2s ease;
     }
+    .stat-tile:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    
     .stat-tile::before {
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0;
-      height: 2px;
+      height: 4px;
     }
-    .stat-tile.s-cyan::before  { background: linear-gradient(90deg, transparent, var(--cyan), transparent); box-shadow: 0 0 12px var(--cyan); }
-    .stat-tile.s-pink::before  { background: linear-gradient(90deg, transparent, var(--pink), transparent); box-shadow: 0 0 12px var(--pink); }
-    .stat-tile.s-gold::before  { background: linear-gradient(90deg, transparent, var(--gold), transparent); box-shadow: 0 0 12px var(--gold); }
+    .stat-tile.s-cyan::before  { background: var(--color-primary); }
+    .stat-tile.s-pink::before  { background: var(--color-secondary); }
+    .stat-tile.s-gold::before  { background: var(--color-gold); }
 
     .stat-tile .label {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      color: rgba(255,255,255,0.4);
-      letter-spacing: 0.15em;
+      font-family: var(--font-main);
+      font-weight: 600;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.1em;
       text-transform: uppercase;
-      margin-bottom: 8px;
+      margin-bottom: 12px;
     }
     .stat-tile .value {
-      font-family: var(--font-title);
-      font-size: 1.8rem;
-      font-weight: 900;
+      font-family: var(--font-mono);
+      font-size: 2rem;
+      font-weight: 600;
     }
-    .v-cyan { color: var(--cyan); text-shadow: 0 0 10px rgba(0,243,255,0.5); }
-    .v-pink { color: var(--pink); text-shadow: 0 0 10px rgba(255,0,127,0.5); }
-    .v-gold { color: var(--gold); text-shadow: 0 0 10px rgba(255,184,0,0.5); }
+    .v-cyan { color: var(--color-primary); }
+    .v-pink { color: var(--color-secondary); }
+    .v-gold { color: var(--color-gold); }
 
     /* ── Filter bar ────────────────────────────────────────────────────────── */
     .filter-bar {
       display: flex;
       align-items: center;
-      gap: 12px;
+      justify-content: space-between;
+      gap: 16px;
       margin-bottom: 24px;
       flex-wrap: wrap;
     }
 
     .filter-bar input {
       flex: 1;
-      min-width: 180px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 8px;
-      padding: 10px 16px;
-      color: #fff;
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      letter-spacing: 0.05em;
+      min-width: 250px;
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      border-radius: 10px;
+      padding: 12px 16px;
+      color: var(--text-main);
+      font-family: var(--font-main);
+      font-size: 0.95rem;
       outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
     }
     .filter-bar input:focus {
-      border-color: var(--cyan);
-      box-shadow: 0 0 8px rgba(0,243,255,0.25);
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
     }
-    .filter-bar input::placeholder { color: rgba(255,255,255,0.25); }
+    .filter-bar input::placeholder { color: var(--text-light); }
 
     .refresh-btn {
-      background: rgba(0,243,255,0.08);
-      border: 1px solid rgba(0,243,255,0.3);
-      color: var(--cyan);
-      border-radius: 8px;
-      padding: 10px 20px;
-      font-family: var(--font-mono);
-      font-size: 0.8rem;
-      letter-spacing: 0.1em;
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      color: var(--text-main);
+      border-radius: 10px;
+      padding: 12px 24px;
+      font-family: var(--font-main);
+      font-weight: 600;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
       cursor: pointer;
-      transition: all 0.2s;
-      white-space: nowrap;
+      box-shadow: var(--shadow-sm);
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
     .refresh-btn:hover {
-      background: rgba(0,243,255,0.18);
-      box-shadow: 0 0 12px rgba(0,243,255,0.25);
+      background: var(--bg-body);
+      border-color: #cbd5e1;
     }
-    .refresh-btn.spinning { animation: spin 0.7s linear infinite; }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
+    .refresh-btn.spinning { pointer-events: none; opacity: 0.7; }
+    
     /* ── Leaderboard table ─────────────────────────────────────────────────── */
     .lb-table-wrap {
-      background: var(--panel);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 16px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border-light);
+      border-radius: 20px;
       overflow: hidden;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+      box-shadow: var(--shadow-lg);
     }
 
     .lb-table-header {
       display: grid;
-      grid-template-columns: 56px 1fr 110px 110px 120px;
-      padding: 14px 24px;
-      border-bottom: 1px solid rgba(255,255,255,0.07);
-      background: rgba(255,255,255,0.03);
+      grid-template-columns: 60px 1fr 120px 100px 120px;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border-light);
+      background: #f8fafc;
     }
 
     .lb-col-head {
-      font-family: var(--font-mono);
-      font-size: 0.68rem;
-      color: rgba(255,255,255,0.35);
-      letter-spacing: 0.15em;
+      font-family: var(--font-main);
+      font-weight: 700;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
       text-transform: uppercase;
     }
 
     /* Rows */
     .lb-row {
       display: grid;
-      grid-template-columns: 56px 1fr 110px 110px 120px;
-      padding: 16px 24px;
-      border-bottom: 1px solid rgba(255,255,255,0.04);
+      grid-template-columns: 60px 1fr 120px 100px 120px;
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border-light);
       align-items: center;
-      transition: background 0.15s;
+      background: #ffffff;
+      transition: background 0.2s ease;
       animation: rowIn 0.35s ease both;
     }
     .lb-row:last-child { border-bottom: none; }
-    .lb-row:hover { background: rgba(255,255,255,0.03); }
+    .lb-row:hover { background: #f1f5f9; }
 
     @keyframes rowIn {
-      from { opacity: 0; transform: translateX(-12px); }
-      to   { opacity: 1; transform: translateX(0); }
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
     }
 
     /* Rank decorators */
     .rank-badge {
-      font-family: var(--font-title);
-      font-size: 1rem;
-      font-weight: 900;
+      font-family: var(--font-main);
+      font-weight: 700;
+      font-size: 1.1rem;
       text-align: center;
     }
-    .rank-1 { color: #ffd700; text-shadow: 0 0 12px rgba(255,215,0,0.7); font-size: 1.3rem; }
-    .rank-2 { color: #c0c0c0; text-shadow: 0 0 8px rgba(192,192,192,0.5); font-size: 1.15rem; }
-    .rank-3 { color: #cd7f32; text-shadow: 0 0 8px rgba(205,127,50,0.5); font-size: 1.05rem; }
-    .rank-n { color: rgba(255,255,255,0.35); font-size: 0.85rem; }
+    .rank-1 { font-size: 1.5rem; }
+    .rank-2 { font-size: 1.3rem; }
+    .rank-3 { font-size: 1.2rem; }
+    .rank-n { color: var(--text-light); font-size: 1rem; }
 
-    /* Medal rows */
-    .lb-row.gold-row   { background: rgba(255,215,0,0.04); }
-    .lb-row.silver-row { background: rgba(192,192,192,0.03); }
-    .lb-row.bronze-row { background: rgba(205,127,50,0.03); }
+    /* Soft Medal rows */
+    .lb-row.gold-row   { background: rgba(245, 158, 11, 0.03); }
+    .lb-row.silver-row { background: rgba(148, 163, 184, 0.04); }
+    .lb-row.bronze-row { background: rgba(180, 83, 9, 0.03); }
 
     .player-name {
       font-weight: 700;
-      font-size: 1rem;
-      color: #fff;
+      font-size: 1.05rem;
+      color: var(--text-main);
     }
     .player-meta {
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      color: rgba(255,255,255,0.3);
-      letter-spacing: 0.05em;
-      margin-top: 3px;
+      font-family: var(--font-main);
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 4px;
     }
 
     .lb-score {
-      font-family: var(--font-title);
-      font-size: 1.1rem;
-      font-weight: 900;
-      color: var(--gold);
-      text-shadow: 0 0 8px rgba(255,184,0,0.4);
+      font-family: var(--font-mono);
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--color-primary);
       text-align: right;
     }
 
     .lb-pieces {
       font-family: var(--font-mono);
-      font-size: 0.9rem;
-      color: var(--cyan);
+      font-size: 0.95rem;
+      color: var(--text-main);
       text-align: right;
     }
 
     .lb-time {
       font-family: var(--font-mono);
-      font-size: 0.85rem;
-      color: rgba(255,255,255,0.45);
+      font-size: 0.95rem;
+      color: var(--text-muted);
       text-align: right;
     }
 
     /* ── Empty / loading state ─────────────────────────────────────────────── */
     .lb-empty {
-      padding: 60px 20px;
+      padding: 80px 20px;
       text-align: center;
-      font-family: var(--font-mono);
-      color: rgba(255,255,255,0.3);
-      letter-spacing: 0.1em;
-      font-size: 0.9rem;
+      font-family: var(--font-main);
+      font-weight: 500;
+      color: var(--text-muted);
+      font-size: 1rem;
     }
-    .lb-empty .icon { font-size: 2.5rem; margin-bottom: 16px; }
-
-    /* ── Skeleton loader ───────────────────────────────────────────────────── */
-    .skel {
-      background: linear-gradient(90deg,
-        rgba(255,255,255,0.04) 25%,
-        rgba(255,255,255,0.10) 50%,
-        rgba(255,255,255,0.04) 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.4s infinite;
-      border-radius: 4px;
-      height: 14px;
-    }
-    @keyframes shimmer {
-      0%   { background-position: 200% 0; }
-      100% { background-position: -200% 0; }
-    }
-
-    /* ── Date badge ────────────────────────────────────────────────────────── */
-    .date-badge {
-      font-family: var(--font-mono);
-      font-size: 0.68rem;
-      color: rgba(255,255,255,0.25);
-    }
+    .lb-empty .icon { font-size: 2.5rem; margin-bottom: 16px; opacity: 0.5; }
 
     /* ── Footer ────────────────────────────────────────────────────────────── */
     .page-footer {
       text-align: center;
       margin-top: 48px;
-      font-family: var(--font-mono);
-      font-size: 0.75rem;
-      color: rgba(255,255,255,0.2);
-      letter-spacing: 0.1em;
+      font-family: var(--font-main);
+      font-weight: 500;
+      font-size: 0.8rem;
+      color: var(--text-light);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
     }
 
     /* ── Responsive ────────────────────────────────────────────────────────── */
     @media (max-width: 640px) {
       .lb-table-header,
       .lb-row {
-        grid-template-columns: 44px 1fr 80px 70px;
+        grid-template-columns: 44px 1fr 90px 70px;
+        padding: 16px;
       }
       /* Hide solve-time column on mobile */
       .lb-col-head:nth-child(5),
@@ -365,16 +353,15 @@
 <body>
   <div class="bg-layer"></div>
   <div class="grid-bg"></div>
-  <div class="crt-overlay"></div>
 
   <div class="page">
     <!-- Header -->
     <div class="page-header">
-      <a href="/" class="back-link">← BACK TO HOME</a>
+      <a href="/" class="back-link">← Back to Home</a>
       <div class="page-title">
-        <span class="title-crowd">CROWD</span><span class="title-play">PLAY</span>
+        <span class="title-crowd">Crowd</span><span class="title-play">Play</span>
       </div>
-      <div class="page-subtitle">ALL-TIME GLOBAL LEADERBOARD</div>
+      <div class="page-subtitle">All-Time Global Leaderboard</div>
     </div>
 
     <!-- Stats banner -->
@@ -396,17 +383,20 @@
     <!-- Filter + refresh -->
     <div class="filter-bar">
       <input type="text" id="filterInput" placeholder="Search by player name…" />
-      <button class="refresh-btn" id="refreshBtn">⟳ REFRESH</button>
+      <button class="refresh-btn" id="refreshBtn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2v6h-6"/><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 8V2h6"/></svg>
+        Refresh
+      </button>
     </div>
 
     <!-- Table -->
     <div class="lb-table-wrap">
       <div class="lb-table-header">
         <span class="lb-col-head">#</span>
-        <span class="lb-col-head">PLAYER</span>
-        <span class="lb-col-head" style="text-align:right">SCORE</span>
-        <span class="lb-col-head" style="text-align:right">PIECES</span>
-        <span class="lb-col-head" style="text-align:right">TIME</span>
+        <span class="lb-col-head">Player</span>
+        <span class="lb-col-head" style="text-align:right">Score</span>
+        <span class="lb-col-head" style="text-align:right">Pieces</span>
+        <span class="lb-col-head" style="text-align:right">Time</span>
       </div>
       <div id="lbBody">
         <!-- populated by JS -->
@@ -414,7 +404,7 @@
       </div>
     </div>
 
-    <div class="page-footer">CROWDPLAY · ALL-TIME HALL OF FAME · RECORDS PERSIST ACROSS SESSIONS</div>
+    <div class="page-footer">CrowdPlay · All-Time Hall of Fame · Records persist across sessions</div>
   </div>
 
   <script>
@@ -465,7 +455,7 @@
             <span class="rank-badge ${cls}">${label}</span>
             <div>
               <div class="player-name">${escHtml(s.display_name)}</div>
-              <div class="player-meta">ROOM ${escHtml(s.room_code)} · ${s.total_players} players · ${formatDate(s.achieved_at)}</div>
+              <div class="player-meta">Room ${escHtml(s.room_code)} · ${s.total_players} players · ${formatDate(s.achieved_at)}</div>
             </div>
             <div class="lb-score">${s.score.toLocaleString()}</div>
             <div class="lb-pieces">${s.pieces_placed}</div>
@@ -485,7 +475,10 @@
     // ── Fetch leaderboard ────────────────────────────────────────────────────
     async function loadScores() {
       const btn = document.getElementById('refreshBtn');
+      const svg = btn.querySelector('svg');
       btn.classList.add('spinning');
+      if(svg) svg.style.animation = 'spin 1s linear infinite';
+      
       try {
         const [lbRes, statsRes] = await Promise.all([
           fetch('/api/leaderboard?limit=50'),
@@ -509,6 +502,7 @@
           `<div class="lb-empty"><div class="icon">⚠️</div>Could not load records. Try refreshing.</div>`;
       } finally {
         btn.classList.remove('spinning');
+        if(svg) svg.style.animation = 'none';
       }
     }
 

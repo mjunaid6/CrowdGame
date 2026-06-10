@@ -6,36 +6,39 @@
   <title>CrowdPlay | Admin Setup & Control Panel</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/admin.css">
   <script src="/socket.io/socket.io.js"></script>
   <script src="/admin.js" defer></script>
 </head>
 <body>
-  <div class="glow-bg"></div>
-  <div class="crt-overlay"></div>
+  <div class="modern-bg"></div>
 
   <div class="container">
     <header>
       <div class="brand">
-        <span class="neon-text-cyan">CROWD</span><span class="neon-text-pink">PLAY</span>
-        <span class="badge">ADMIN v2.0</span>
+        <div class="brand-text">
+          <span class="text-primary">Crowd</span><span class="text-secondary">Play</span>
+        </div>
+        <span class="badge">Admin v2.0</span>
       </div>
-      <div class="header-actions" style="display:flex;align-items:center;gap:16px;">
-        <a href="/leaderboard" target="_blank" style="font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:#ffb800;text-decoration:none;letter-spacing:0.1em;opacity:0.8;transition:opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">🏆 LEADERBOARD</a>
+      <div class="header-actions">
+        <a href="/leaderboard" target="_blank" class="header-link">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>
+          Leaderboard
+        </a>
         <div class="system-status">
-          <span class="dot green"></span> Connected to Server
+          <span class="dot green"></span> <span class="status-text">Connected</span>
         </div>
       </div>
     </header>
 
-    <!-- 1. LOGIN SCREEN -->
     <div id="loginSection" class="panel active">
       <div class="panel-header">
         <h2>System Authentication</h2>
+        <p class="subtitle">Access the control console to initialize events and configure game modules.</p>
       </div>
       <div class="panel-body">
-        <p>Access the control console to initialize events and configure social game modules.</p>
         <form id="loginForm">
           <div class="form-group">
             <label for="adminPassword">Console Authorization Key</label>
@@ -47,15 +50,17 @@
       </div>
     </div>
 
-    <!-- 2. CONTROL PANEL SECTION -->
     <div id="controlSection" class="panel hidden">
       <div class="grid-2col">
-        <!-- Setup Area -->
+        
         <div class="panel-card">
-          <h3>1. Activity Setup</h3>
+          <div class="card-header">
+            <div class="step-icon">1</div>
+            <h3>Activity Setup</h3>
+          </div>
           <form id="setupForm">
             <div class="form-group">
-              <label for="roomCodeInput">Room Code (Leave blank for random)</label>
+              <label for="roomCodeInput">Room Code <span class="label-hint">(Leave blank for random)</span></label>
               <input type="text" id="roomCodeInput" maxlength="4" placeholder="e.g. PLAY" style="text-transform: uppercase;">
             </div>
             
@@ -84,7 +89,9 @@
             <div class="form-group">
               <label for="puzzleImageFile">Puzzle Board Image</label>
               <div class="file-upload-zone" id="dropzone">
-                <span class="upload-icon">📸</span>
+                <span class="upload-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                </span>
                 <span class="upload-text">Drag & drop image or click to select</span>
                 <span class="upload-subtext">Supports PNG, JPEG up to 10MB</span>
                 <input type="file" id="puzzleImageFile" accept="image/*" class="hidden">
@@ -98,33 +105,38 @@
               </div>
             </div>
 
-            <button type="submit" id="createRoomBtn" class="btn btn-cyan btn-block">Initialize Screen Room</button>
+            <button type="submit" id="createRoomBtn" class="btn btn-primary btn-block">Initialize Screen Room</button>
           </form>
         </div>
 
-        <!-- Live Status / Room Control Area -->
         <div class="panel-card" id="roomConsoleCard">
-          <h3>2. Event Live Console</h3>
+          <div class="card-header">
+            <div class="step-icon">2</div>
+            <h3>Event Live Console</h3>
+          </div>
+          
           <div class="console-placeholder" id="consolePlaceholder">
-            Initialize an activity room in the setup panel to begin event broadcast.
+            <div class="placeholder-icon">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </div>
+            <p>Initialize an activity room in the setup panel to begin event broadcast.</p>
           </div>
           
           <div class="console-active hidden" id="consoleActive">
             <div class="console-header-info">
-              <div>
+              <div class="info-block">
                 <span class="label">ROOM CODE</span>
                 <span class="value room-code-display" id="activeRoomCode">----</span>
               </div>
-              <div>
+              <div class="info-block align-right">
                 <span class="label">STATUS</span>
-                <span class="value status-badge" id="activeRoomStatus">WAITING</span>
+                <span class="status-badge" id="activeRoomStatus">WAITING</span>
               </div>
             </div>
 
             <div class="qr-container-card">
-              <div id="qrCodeWrapper">
-                <!-- QR Code generated here -->
-              </div>
+              <div id="qrCodeWrapper" class="qr-box">
+                </div>
               <div class="join-info">
                 <p>Attendees scan QR to join, or visit:</p>
                 <code id="activeJoinUrl">https://localhost:3000/join/----</code>
@@ -134,22 +146,24 @@
 
             <div class="metrics-grid">
               <div class="metric-card">
-                <span class="metric-val" id="attendeesCount">0</span>
                 <span class="metric-label">Attendees Joined</span>
+                <span class="metric-val" id="attendeesCount">0</span>
               </div>
               <div class="metric-card">
-                <span class="metric-val" id="puzzleProgress">0%</span>
                 <span class="metric-label">Puzzle Progress</span>
+                <span class="metric-val text-primary" id="puzzleProgress">0%</span>
               </div>
             </div>
 
             <div class="action-buttons-group">
               <button class="btn btn-primary" id="startActivityBtn">🚀 Start Activity</button>
-              <button class="btn btn-danger" id="resetRoomBtn">🔄 Reset Session</button>
+              <button class="btn btn-danger-outline" id="resetRoomBtn">🔄 Reset Session</button>
             </div>
             
             <div class="live-activity-log">
-              <h4>Console Monitor</h4>
+              <div class="log-header">
+                <h4>Console Monitor</h4>
+              </div>
               <div class="log-output" id="consoleLog">
                 [SYSTEM] Awaiting pilot activation...
               </div>

@@ -96,9 +96,22 @@ async function initSchema() {
       console.log('Created table: puzzle_states');
     }
 
-    // 5. Global leaderboard table (new)
-    const lbService = require('../routes/leaderboard');
-    await lbService.ensureTable();
+    // 5. Global leaderboard table (Fixed)
+    const hasLeaderboard = await db.schema.hasTable('global_leaderboard');
+    if (!hasLeaderboard) {
+      await db.schema.createTable('global_leaderboard', (table) => {
+        table.uuid('id').primary();
+        table.string('display_name', 50).notNullable();
+        table.integer('score').defaultTo(0);
+        table.integer('pieces_placed').defaultTo(0);
+        table.string('room_code', 10).nullable();
+        table.integer('total_players').defaultTo(1);
+        table.integer('total_pieces').defaultTo(0);
+        table.integer('solve_duration_secs').nullable();
+        table.timestamp('achieved_at').defaultTo(db.fn.now());
+      });
+      console.log('Created table: global_leaderboard');
+    }
 
     console.log('Database schema initialization completed.');
   } catch (error) {

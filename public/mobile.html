@@ -6,126 +6,118 @@
   <title>CrowdPlay | Pilot Controller</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/mobile.css">
   <script src="/socket.io/socket.io.js"></script>
   <script src="/mobile.js" defer></script>
 </head>
 <body class="mobile-body">
-  <div class="glow-bg"></div>
-  <div class="crt-overlay"></div>
+  <div class="bg-layer"></div>
+  <div class="grid-bg"></div>
 
-  <!-- 1. ENTRY / ONBOARDING SCREEN -->
   <div id="joinSection" class="mobile-card active">
     <div class="card-header">
-      <h1>CROWD<span class="neon-pink">PLAY</span></h1>
-      <p class="tagline">PILOT ACTIVATION PROTOCOL</p>
+      <h1><span class="text-primary">Crowd</span><span class="text-secondary">Play</span></h1>
+      <p class="tagline">Player Registration</p>
     </div>
     <div class="card-body">
       <form id="joinForm">
         <div class="form-group">
-          <label for="displayNameInput">Your Pilot Display Name</label>
+          <label for="displayNameInput">Your Display Name</label>
           <input type="text" id="displayNameInput" placeholder="e.g. Maverick" required maxlength="12">
         </div>
         <div class="form-group">
-          <label>ROOM CODE</label>
+          <label>Event Room Code</label>
           <div class="room-code-badge" id="joinRoomCode">----</div>
         </div>
-        <button type="submit" class="btn btn-primary btn-block">Join Solving Roster</button>
+        <button type="submit" class="btn btn-primary btn-block">Join Game</button>
       </form>
     </div>
   </div>
 
-  <!-- 2. LOBBY / WAITING SCREEN -->
   <div id="waitingSection" class="mobile-card hidden">
     <div class="card-header">
-      <div class="pilot-badge" id="pilotBadge">PILOT CONNECTED</div>
-      <h2 id="welcomeText" class="neon-cyan">WELCOME, PILOT</h2>
+      <div class="pilot-badge" id="pilotBadge">Connected</div>
+      <h2 id="welcomeText" class="text-primary">Welcome, Player</h2>
     </div>
     <div class="card-body">
-      <p class="desc">You have successfully registered on the event board. Waiting for the coordinator to start the solving activity...</p>
+      <p class="desc">You have successfully joined the event. Waiting for the host to start the activity...</p>
       
       <div class="joined-indicator">
-        <div class="ping-circle"></div>
+        <div class="pulse-ring"></div>
         <span>Awaiting Launch...</span>
       </div>
 
       <div class="player-summary">
         <div class="summary-item">
-          <span class="label">COLOR CHANNEL</span>
-          <span class="value" id="playerColorVal" style="color: #ff007f;">PINK</span>
+          <span class="label">Assigned Color</span>
+          <span class="value" id="playerColorVal" style="color: var(--color-secondary);">Pink</span>
         </div>
         <div class="summary-item">
-          <span class="label">STATUS</span>
-          <span class="value text-green">READY</span>
+          <span class="label">Status</span>
+          <span class="value text-success">Ready</span>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- 3. JIGSAW GAMEPLAY WORKSPACE -->
   <div id="gameplaySection" class="mobile-container hidden">
     <header class="gameplay-header">
       <div class="pilot-info">
         <span class="p-color-dot" id="headerColorDot"></span>
-        <span class="p-name" id="headerPilotName">PILOT</span>
+        <span class="p-name" id="headerPilotName">PLAYER</span>
       </div>
       <div class="gameplay-progress">
-        <span>PUZZLE PROGRESS</span>
+        <span>Progress</span>
         <span class="progress-pct" id="gameProgressPct">0%</span>
       </div>
     </header>
 
-    <!-- Main puzzle piece workspace -->
     <div class="workspace-card">
-      <div class="workspace-label">WORKSPACE: PLACE PIECE</div>
+      <div class="workspace-label">Workspace: Drag & Drop</div>
       
-      <!-- Interactive drag board -->
       <div id="dragBoard" class="drag-board">
-        <!-- Full background grid overlay (populated dynamically in JS) -->
         <div id="gridOverlay" class="grid-overlay"></div>
         
-        <!-- Target grid ghost guide map (hidden as board is now full reference) -->
         <div class="target-minimap" id="minimap" style="display: none;">
-          <!-- Thumbnail of target position -->
-          <div class="minimap-hint">Drag piece to matching position here!</div>
+          <div class="minimap-hint">Drag piece to match position</div>
         </div>
 
-        <!-- Floating pieces elements assigned to this player -->
         <div class="pieces-pool" id="assignedPiecesPool">
-          <!-- Pieces will be injected here -->
-        </div>
+          </div>
       </div>
-      <!-- Selector for assigned pieces -->
+      
       <div class="piece-selector-container" id="pieceSelectorContainer"></div>
     </div>
 
-    <!-- Instructions / Footer stats -->
     <footer class="gameplay-footer">
       <div class="tip-box">
-        💡 Drag the piece onto the board to match its grid cell. When you're close, let go to snap it!
+        <span class="tip-icon">💡</span> 
+        <span class="tip-text">Drag the piece onto the board to match its grid cell. Get close to snap it in place!</span>
       </div>
     </footer>
   </div>
 
-  <!-- 4. SYSTEM COMPLETE SCREEN -->
   <div id="completeSection" class="mobile-card hidden">
     <div class="card-header">
-      <h1 class="neon-green">SOLVED!</h1>
-      <p class="tagline">MISSION ACCOMPLISHED</p>
+      <h1 class="text-success">Solved!</h1>
+      <p class="tagline">Mission Accomplished</p>
     </div>
     <div class="card-body">
-      <p class="desc text-center">The community has successfully resolved the image parameters. Great job!</p>
+      <p class="desc text-center">The community has successfully completed the puzzle. Great job working together!</p>
       
       <div class="personal-score-card">
-        <span class="label">YOUR CONTRIBUTION</span>
-        <span class="score-val" id="myContributionsVal">0</span>
-        <span class="score-label">Points Earned</span>
+        <span class="score-label">Your Contribution</span>
+        <span class="score-val text-primary" id="myContributionsVal">0</span>
+        <span class="score-subtext">Points Earned</span>
       </div>
 
-      <a href="/leaderboard" class="btn btn-leaderboard-mobile" style="display:block;text-align:center;padding:12px;margin-bottom:12px;background:rgba(255,184,0,0.1);color:#ffb800;border:1px solid rgba(255,184,0,0.4);border-radius:10px;text-decoration:none;font-weight:700;font-size:0.9rem;letter-spacing:0.04em;">🏆 Global Leaderboard</a>
-      
-      <button class="btn btn-secondary btn-block" onclick="window.location.reload()">Reset Controller</button>
+      <div class="action-buttons">
+        <a href="/leaderboard" class="btn btn-outline btn-block">
+          <span class="btn-icon">🏆</span> View Global Leaderboard
+        </a>
+        <button class="btn btn-secondary btn-block" onclick="window.location.reload()">Reset Controller</button>
+      </div>
     </div>
   </div>
 </body>
