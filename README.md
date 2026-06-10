@@ -25,7 +25,7 @@ Scores persist across server restarts (using the same SQLite or PostgreSQL datab
 - `public/mobile.html` — complete screen includes "Global Leaderboard" link
 
 <img src="public\uploads\screenshots\leaderboard_mobile_view.jpeg" alt="Alt text" width="600">
-<img src="public\uploads\screenshots\leaderboard_desktop_view.jpeg" alt="Alt text" width="600">
+<img src="public\uploads\screenshots\leaderboard_desktop_view.png" alt="Alt text" width="600">
 
 ### 2. UI / UX Overhaul (`🎨 Modernization`)
 
@@ -42,8 +42,8 @@ The entire frontend was refactored to transition away from the original dark, ne
 
 ---
 
-<img src="public\uploads\screenshots\admin_page.jpeg" alt="Alt text" width="600">
-<img src="public\uploads\screenshots\gamescreen.jpeg" alt="Alt text" width="600">
+<img src="public\uploads\screenshots\admin_page.png" alt="Alt text" width="600">
+<img src="public\uploads\screenshots\game_screen.png" alt="Alt text" width="600">
 
 ## Setup & Running
 
