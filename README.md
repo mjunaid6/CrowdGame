@@ -24,17 +24,18 @@ Scores persist across server restarts (using the same SQLite or PostgreSQL datab
 - `public/screen.html` — completion screen shows global rank + "View Global Leaderboard" button
 - `public/mobile.html` — complete screen includes "Global Leaderboard" link
 
-### 2. UI / UX Overhaul (`🎨 Improved`)
+### 2. UI / UX Overhaul (`🎨 Modernization`)
 
-| Page | Change |
-|------|--------|
-| **Landing page** (`index.html`) | Full redesign — Orbitron title font, gradient accent bar, better button hierarchy, leaderboard nav button, animated grid background |
-| **Admin header** | Leaderboard quick-link, version bump to v2.0 |
-| **Big screen** — gameplay HUD | Progress bar pulses with a cyan glow when puzzle is ≥85% complete |
-| **Big screen** — completion screen | Shows formatted solve time (e.g. `1m 42s`), all-time rank badge, leaderboard link button |
-| **Mobile** — completion screen | "Global Leaderboard" link button |
-| **Lobby cards** | Subtle lift-on-hover transform effect |
-| `screen.css` | New `.btn-leaderboard`, `.near-complete` glow animation, hover transitions |
+The entire frontend was refactored to transition away from the original dark, neon-cyberpunk aesthetic. The application now utilizes a **Premium Soft Modern Design** to improve accessibility, legibility, and professional appeal. The new UI relies on a refined color palette (Indigo, Rose, Slate), subtle glassmorphism, tactile drop-shadows, and modern typography (`Outfit` and `JetBrains Mono`).
+
+| Interface | UX & Design Enhancements |
+| :--- | :--- |
+| **Global Aesthetic** | Removed harsh CRT overlays and neon glows. Implemented a centralized CSS token system (`:root`) with soft pastel backgrounds, rounded pill-shaped elements, and plush layered shadows. |
+| **Landing Page** (`index.html`) | Redesigned with a clean white floating card layout, an Indigo-to-Rose gradient text logo, a subtle dot-matrix texture background, and highly responsive hover states. |
+| **Admin Panel** (`admin.html`) | Upgraded to a modern SaaS-style dashboard. Features clean file upload dropzones, pastel status badges, structured input forms, and a leaderboard quick-link in the header. |
+| **Big Screen** (`screen.html`) | Rebuilt for high-contrast visibility on projectors and TVs. Features an airy layout, floating pill-shaped HUDs, massive legible typography, and a progress bar that pulses with a cyan glow when nearing completion (≥85%). |
+| **Mobile Controller** (`mobile.html`) | Focused on physical tactility. The workspace utilizes a light slate background to ensure puzzle pieces visually pop. Buttons feel pressable with inset shadows, and the onboarding flow mimics a premium native app. |
+| **Leaderboard** (`leaderboard.html`) | Crisp white data tables with soft pastel row highlights for medalists (Gold, Silver, Bronze), modern search input fields, and floating interactive stat tiles. |
 
 ---
 
