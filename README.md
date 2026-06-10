@@ -26,6 +26,7 @@ Scores persist across server restarts (using the same SQLite or PostgreSQL datab
 
 <img src="public\uploads\screenshots\leaderboard_mobile_view.jpeg" alt="Alt text" width="600">
 Leaderboard Mobile view
+
 <img src="public\uploads\screenshots\leaderboard_desktop_view.png" alt="Alt text" width="600">
 Leaderboard Desktop view
 
@@ -45,9 +46,11 @@ The entire frontend was refactored to transition away from the original dark, ne
 ---
 
 <img src="public\uploads\screenshots\admin_page.png" alt="Alt text" width="600">
+
 Admin Page
 
 <img src="public\uploads\screenshots\game_screen.png" alt="Alt text" width="600">
+
 Game screen
 
 ## Setup & Running
